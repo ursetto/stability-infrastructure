@@ -19,9 +19,11 @@ FILES="buildversion version.scm NEWS.stability"
    || die "Usage: $0 TAG \n   Ex: $0 4.7.0.3-st"
 [ -d ".git" ] \
    || die "Run this from the top level of the stability git repository"
+[[ "stability" == $(git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3) ]] \
+   || die "A stability/ branch must be checked out"   # we don't check tag corresponds, though
 git show-ref --tags "$TAG" >/dev/null \
    && die "Tag $TAG already exists"
-git status --porcelain --untracked-files=no | perl -ne 'exit 1' \
+[[ -z $(git status --porcelain --untracked-files=no) ]] \
    || die "Commit all pending changes first"
 
 printf "$TAG" > buildversion \
@@ -38,3 +40,6 @@ git commit -v -m "Version $TAG" \
 git tag -s "$TAG" -m "Version $TAG" \
    || die
 echo "Tagged version $TAG"
+
+# note: you must push the tag explicitly; see ./push
+# e.g. git commit call-cc stability/4.7.0 tag $TAG
