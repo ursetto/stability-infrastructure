@@ -1,11 +1,11 @@
 TAG=4.7.0.6
 
 # Test the release.  This is unfortunately not automated
-# Generally, you have to build and install into normal prefix,
+# Generally, you have to build and install into normal or temp prefix,
 #   then run the tests; the test suite is broken and won't run
-#   properly if chicken is not installed.  PATH may need to be
-#   set so installed (testing) chicken is first.
-
+#   properly if chicken is not installed (error in setup-download).
+#   `make check` uses the PREFIX you specified in `make;make install`
+#   so installing to a temp prefix will work.
 
 # Update documentation (NEWS, NEWS.stability, README, manual/The User's Manual) 
 #  with new version number, and commit  [see ./tag for an example]

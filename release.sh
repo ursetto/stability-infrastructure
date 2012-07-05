@@ -1,6 +1,9 @@
 #!/bin/bash
 # optional: update manual with current version #.  This is buried in scripts/setversion which also may touch buildversion (which we don't want)
 
+# Note: normally, we'd want to test the release, then push out the version tag, then upload the tarball.
+# This doesn't handle that well.
+
 #VER=$1
 #if [ -z "$VER" ]; then echo "usage: $0 4.7.0.5-st" >&2; exit 1; fi
 
@@ -26,14 +29,19 @@ tar zxf chicken-$VER.tar.gz &&
 	(cd chicken-$VER &&
 	$MAKE PREFIX=$PWD/inst &&         # Unfortunately `make check` requires chicken to be installed
 	$MAKE PREFIX=$PWD/inst install &&
-	$MAKE PREFIX=$PWD/inst check) &&
+	$MAKE PREFIX=$PWD/inst check) &&  # Setting prefix here is not necessary, but not harmful
 	rm -rf chicken-$VER &&
 # can also make -f Makefile.macosx buildhead prior to this
-echo "Copying tarball and md5 file to release location..." &&
-scp "chicken-$VER.tar.gz" "chicken-$VER.tar.gz.md5" call-cc:/var/www/apache/code/stability/4.7.0/ &&
-echo "Please update wiki.call-cc.org/stability" &&
+
+
+### Do the copy step manually for now:
+
+# echo "Copying tarball and md5 file to release location..." &&
+# scp "chicken-$VER.tar.gz" "chicken-$VER.tar.gz.md5" call-cc:/var/www/apache/code/stability/4.7.0/ &&
+# echo "Please update wiki.call-cc.org/stability" &&
+
+
+
 exit 0
-
-
 echo "*** release failed ***" >&2
 exit 1

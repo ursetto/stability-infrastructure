@@ -42,4 +42,4 @@ git tag -s "$TAG" -m "Version $TAG" \
 echo "Tagged version $TAG"
 
 # note: you must push the tag explicitly; see ./push
-# e.g. git commit call-cc stability/4.7.0 tag $TAG
+# e.g. git push call-cc stability/4.7.0 tag $TAG
