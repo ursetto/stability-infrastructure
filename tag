@@ -1,7 +1,11 @@
 #!/bin/sh
 
-# Set buildversion and version.scm to version $1, add any pending changes to NEWS.stability,
-# commit and create signed tag $1.
+# Set buildversion and version.scm to version $1, commit and create signed tag $1.
+
+# Prior to calling, you should update version nos. in docs and make a separate commit
+# for it (as it is not done automatically):
+#   git add NEWS NEWS.stability README manual/The\ User\'s\ Manual
+#   git commit -m 'Update version number in documentation'
 
 die() {
       echo "$@" >&2
@@ -17,8 +21,8 @@ FILES="buildversion version.scm NEWS.stability"
    || die "Run this from the top level of the stability git repository"
 git show-ref --tags "$TAG" >/dev/null \
    && die "Tag $TAG already exists"
-git status --porcelain --untracked-files=no | grep -v NEWS.stability | perl -ne 'exit 1' \
-   || die "Commit all pending changes first"   # but allow NEWS.stability
+git status --porcelain --untracked-files=no | perl -ne 'exit 1' \
+   || die "Commit all pending changes first"
 
 printf "$TAG" > buildversion \
    || die
@@ -29,7 +33,7 @@ git add $FILES \
 git diff --cached \
    || die
 echo
-git commit -v -m "Version $TAG" $FILES \
+git commit -v -m "Version $TAG" \
    || die
 git tag -s "$TAG" -m "Version $TAG" \
    || die
