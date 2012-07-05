@@ -17,7 +17,7 @@ FILES="buildversion version.scm NEWS.stability"
    || die "Run this from the top level of the stability git repository"
 git show-ref --tags "$TAG" >/dev/null \
    && die "Tag $TAG already exists"
-git status --porcelain --untracked-files=no | grep -v NEWS.stability | perl -ne '$_=<>; exit 1 unless $_ = ""' \
+git status --porcelain --untracked-files=no | grep -v NEWS.stability | perl -ne 'exit 1' \
    || die "Commit all pending changes first"   # but allow NEWS.stability
 
 printf "$TAG" > buildversion \
