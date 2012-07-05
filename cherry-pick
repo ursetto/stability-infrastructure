@@ -1,0 +1,8 @@
+# cherry pick $1 and log message into NEWS.stability
+# run this from your checkout directory
+
+IAM=$(which $0)
+SCR=${IAM%/*}
+
+git cherry-pick -x "$@"            &&
+  $SCR/log-head >> NEWS.stability

@@ -1,0 +1,6 @@
+# Push stable branch and specified tag
+# If you use --tags it will push all tags including core tags, maybe this is ok?
+# Alternatively break this up into two steps: git push github; git push github tag $TAG
+
+TAG=4.7.0.2-st
+git push github stability/4.7.0 tag $TAG
