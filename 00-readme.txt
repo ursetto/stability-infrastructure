@@ -19,6 +19,14 @@ tag $TAG
 git push call-cc stability/4.7.0 tag $TAG
 
 
-# Generate a release tarball and md5sum, test it, and upload it
+# Generate a release tarball and md5sum, test it
 release.sh
 
+# upload tarball
+# See zbigniew@call-cc:chicken-infrastructure/doc/release-steps.
+# Tarballs should now go in /var/www/apache/code/releases/x.y.z --
+#   not sure if they should be mirrored in stability dir anymore.
+
+# Update download page
+# (hand svn edit of wiki/stability)
+# (future: edit zbigniew@call-cc:~/chicken-infrastructure/code/index.wiki, make (to copy file), commit and push)
