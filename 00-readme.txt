@@ -7,17 +7,15 @@ TAG=4.7.0.6
 #   `make check` uses the PREFIX you specified in `make;make install`
 #   so installing to a temp prefix will work.
 
-# Update documentation (NEWS, NEWS.stability, README, manual/The User's Manual) 
-#  with new version number, and commit  [see ./tag for an example]
+# Update the NEWS file.  This has to be done by hand.  ./generate-patchlog
+#  displays a list of applied patches as a starting point.
+vi NEWS
 
-
-# Tag new release (updates buildversion, version.scm, and creates annotated tag)
+# Tag new release (updates version info, generates NEWS.stability patchlog, creates signed tag)
 tag $TAG
 
-
-# Upload to call-cc and possibly github
+# Push to call-cc and possibly github
 git push call-cc stability/4.7.0 tag $TAG
-
 
 # Generate a release tarball and md5sum, test it
 release.sh
