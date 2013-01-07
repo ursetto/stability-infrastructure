@@ -13,6 +13,9 @@ die() {
       exit 1
 }
 
+IAM=$(which $0)
+SCRIPTDIR=${IAM%/*}
+
 TAG="$1"
 FILES="buildversion version.scm NEWS.stability"
 
@@ -29,7 +32,10 @@ git show-ref --tags "$TAG" >/dev/null \
 
 printf "$TAG" > buildversion \
    || die
+[[ -e "version.scm" ]] &&               # Not needed for >= 4.8.
 printf '(define-constant +build-version+ "%s")\n' "$TAG" > version.scm \
+   || die
+$SCRIPTDIR/generate-patchlog "$TAG" \
    || die
 git add $FILES \
    || die
