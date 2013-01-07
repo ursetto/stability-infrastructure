@@ -32,7 +32,7 @@ $SCR/tag $TAG
 git push call-cc stability/4.7.0 tag $TAG
 
 # Generate a release tarball and md5sum, test it
-release.sh
+$SCR/release
 
 # upload tarball
 # See zbigniew@call-cc:chicken-infrastructure/doc/release-steps.
