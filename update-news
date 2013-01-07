@@ -1,5 +1,5 @@
 #!/bin/sh
 
-git add NEWS.stability && 
-git commit -m 'Update NEWS.stability' NEWS.stability && 
+git add NEWS.stability NEWS &&
+git commit -m 'Update news' NEWS.stability NEWS &&
 git log -p -1 HEAD
