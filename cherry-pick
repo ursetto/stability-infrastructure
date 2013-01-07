@@ -1,8 +1,7 @@
-# cherry pick $1 and log message into NEWS.stability
-# run this from your checkout directory
+# Cherry pick commit $1, and place cherry pick info in log message.
+# Run this from your checkout directory.
 
 IAM=$(which $0)
 SCR=${IAM%/*}
 
-git cherry-pick -x "$@"            &&
-  $SCR/log-head >> NEWS.stability
+git cherry-pick -x "$@"
