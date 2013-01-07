@@ -1,0 +1,26 @@
+# FIXME: Final log version number comes from tag, but tag can't be added
+#        until log is written.
+
+START=4.7.0
+END=HEAD
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+echo "Chicken $BRANCH branch log"
+echo
+
+LAST=$START
+(git log $START..$END --decorate --oneline --reverse | 
+ egrep '^[0-9a-f]+ \(tag: ' | perl -pe 's/^.+tag: ([^ ]+)[,\)].+$/\1/g' ;
+ echo $END) |
+while read r; do
+   echo "-----------------------------------"
+   echo
+   echo "Changes in $r:"
+   echo
+   git log $LAST..$r --no-decorate --oneline --reverse | 
+     egrep -vi '[0-9a-f]+ Update news(.stability)?' |
+     egrep -v  '[0-9a-f]+ Version '
+   echo
+   LAST=$r
+done
+
