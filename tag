@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Set buildversion and version.scm to version $1, commit and create signed tag $1.
 
@@ -30,22 +31,16 @@ git show-ref --tags "$TAG" >/dev/null \
 [[ -z $(git status --porcelain --untracked-files=no) ]] \
    || die "Commit all pending changes first"
 
-printf "$TAG" > buildversion \
-   || die
-[[ -e "version.scm" ]] &&               # Not needed for >= 4.8.
-printf '(define-constant +build-version+ "%s")\n' "$TAG" > version.scm \
-   || die
-$SCRIPTDIR/generate-patchlog "$TAG" \
-   || die
-git add $FILES \
-   || die
-git diff --cached \
-   || die
+printf "$TAG" > buildversion
+if [[ -e "version.scm" ]]; then               # Not needed for >= 4.8.
+  printf '(define-constant +build-version+ "%s")\n' "$TAG" > version.scm
+fi
+$SCRIPTDIR/generate-patchlog "$TAG"
+git add $FILES
+git diff --cached
 echo
-git commit -v -m "Version $TAG" \
-   || die
-git tag -s "$TAG" -m "Version $TAG" \
-   || die
+git commit -v -m "Version $TAG"
+git tag -s "$TAG" -m "Version $TAG"
 echo "Tagged version $TAG"
 
 # note: you must push the tag explicitly; see ./push
