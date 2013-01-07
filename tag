@@ -6,6 +6,7 @@
 # for it (as it is not done automatically):
 #   git add NEWS NEWS.stability README manual/The\ User\'s\ Manual
 #   git commit -m 'Update version number in documentation'
+# setversion does s/version [0-9][-.0-9a-zA-Z]+/version $TAG/g on README & User's Manual.
 
 die() {
       echo "$@" >&2

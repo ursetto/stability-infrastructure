@@ -1,5 +1,6 @@
 #!/bin/bash
-# optional: update manual with current version #.  This is buried in scripts/setversion which also may touch buildversion (which we don't want)
+# optional: update ./README and "manual/The User's Manual" with current version #.  
+#   This is buried in scripts/setversion which also may touch buildversion (which we don't want)
 
 # Note: normally, we'd want to test the release, then push out the version tag, then upload the tarball.
 # This doesn't handle that well.
