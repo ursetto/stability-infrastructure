@@ -1,21 +1,35 @@
-# FIXME: Final log version number comes from tag, but tag can't be added
-#        until log is written.
+#!/bin/bash
+#/ usage: $0 [TAG]
+#/  Generate a patch log starting from the common ancestor of origin/master
+#/  and the currently checked out branch (stability/*), and ending at HEAD.
+#/  Log is divided into sections based on version tags, such as "4.7.0.1".
+#/
+#/  If TAG is set, it is used as the name of the final tag, so you can
+#/  generate a release log prior to tagging with a version.  Otherwise
+#/  the final tag is "HEAD".
 
-START=4.7.0
+set -e
+
 END=HEAD
+START=$(git merge-base origin/master HEAD)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+TAG=$END
+[[ -n "$1" ]] && TAG=$1
 
 echo "Chicken $BRANCH branch log"
 echo
 
 LAST=$START
 (git log $START..$END --decorate --oneline --reverse | 
- egrep '^[0-9a-f]+ \(tag: ' | perl -pe 's/^.+tag: ([^ ]+)[,\)].+$/\1/g' ;
- echo $END) |
+ egrep '^[0-9a-f]+ \(tag: ' | perl -pe 's/^.+tag: ([^ ]+)[,\)].+$/\1/g' |
+ egrep '^[0-9]+.[0-9]+.[0-9]+' ;
+ echo $END) |          # Obtain all numeric version tags between START and END.
 while read r; do
+   if [[ "$r" == "$END" ]]; then VER=$TAG; else VER=$r; fi
    echo "-----------------------------------"
    echo
-   echo "Changes in $r:"
+   echo "Changes in $VER:"
    echo
    git log $LAST..$r --no-decorate --oneline --reverse | 
      egrep -vi '[0-9a-f]+ Update news(.stability)?' |
