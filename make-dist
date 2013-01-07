@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+IAM=$(which $0)
+SCRIPTDIR=${IAM%/*}
+SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
+MAKE="$SCRIPTDIR/make"
+
+VER="$1"
+
+rm -f chicken-$VER.tar.gz
+$MAKE CHICKEN=./chicken-boot dist
+md5sum chicken-$VER.tar.gz > chicken-$VER.tar.gz.md5

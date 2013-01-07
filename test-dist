@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+IAM=$(which $0)
+SCRIPTDIR=${IAM%/*}
+SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
+MAKE="$SCRIPTDIR/make"
+
+VER="$1"
+
+rm -rf chicken-$VER
+tar zxf chicken-$VER.tar.gz
+
+cd chicken-$VER
+$MAKE PREFIX=$PWD/inst         # Unfortunately `make check` requires chicken to be installed
+$MAKE PREFIX=$PWD/inst install
+$MAKE PREFIX=$PWD/inst check   # Setting prefix here is not necessary, but not harmful
+cd $OLDPWD
+
+rm -rf chicken-$VER
+# can also make -f Makefile.macosx buildhead prior to this
+

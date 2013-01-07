@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# FIXME: derive BASEVER either from branchname or $VER
+# FIXME: Upload NEWS to NEWS.$VER
+# FIXME: Update symlinks
+# FIXME: See chicken-infrastructure/doc/release-steps
+# FIXME: Get push branch name from current branch?  Or assume stability/$BASEVER?
+set -e
+
+VER=$1
+BASEVER=4.7.0
+
+echo "Copying tarball and md5 file to release location..."
+scp "chicken-$VER.tar.gz" "chicken-$VER.tar.gz.md5" call-cc:/var/www/apache/code/releases/$BASEVER/
+
+echo "Pushing branch to call-cc..."
+git push call-cc stability/$BASEVER tag $VER
