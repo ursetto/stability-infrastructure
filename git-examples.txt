@@ -1,0 +1,32 @@
+##### Cherry pick comparisons.  If a patch had conflicts or had to be backported,
+##### you will get a false negative, and have to rely on "cherry-pick -x" log data.
+
+# List commid IDs since fork point that I haven't added to stability (- means present, + means absent)
+git cherry stability/4.7.0 origin/master
+
+# List commid IDs since 4.7.4 that I haven't added to stability
+git cherry stability/4.7.0 origin/master 4.7.4 | egrep '^\+'
+
+# List commit IDs in stability that were cherry-picked (-) and created by me (+)
+git cherry origin/master stability/4.7.0 
+
+# List patches in stability that were cherry-picked (=) and created by me (+)
+# Prettier output than git cherry
+git log --oneline --cherry origin/master...stability/4.7.0
+
+# List patches in stability that do not have equivalents in master, which includes
+# patches that were backported or had conflicts.
+git log --oneline --cherry-pick --right-only --reverse origin/master...stability/4.7.0
+
+# List patches in stability that do not have equivalents in master, which includes
+# patches that were backported or had conflicts, omitting noise of NEWS updates.
+git log --oneline --cherry-pick --right-only --reverse origin/master...stability/4.7.0 | grep -v ' news'
+
+# Show overall topology (tags) of master + stability
+git log --oneline --graph --simplify-by-decoration origin/master stability/4.7.0
+
+# Show only the commits between the most common ancestor of master and stability, and stability HEAD.
+# --ancestry-path ensures only descendents of the merge base, and ancestors of stability, are shown.
+# Without it, it shows ancestors of stability minus ancestors of the merge base; however, if there is
+# a line of development from prior to the merge base 
+git log --oneline --graph --ancestry-path $(git merge-base origin/master stability/4.8.0)..stability/4.8.0
