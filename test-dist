@@ -6,7 +6,9 @@ SCRIPTDIR=${IAM%/*}
 SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
 MAKE="$SCRIPTDIR/make"
 
-VER="$1"
+#VER="$1"
+# `make dist` and make-dist take their version from buildversion, so we do too
+VER=$(cat buildversion)
 
 rm -rf chicken-$VER
 tar zxf chicken-$VER.tar.gz

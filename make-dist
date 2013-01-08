@@ -6,7 +6,9 @@ SCRIPTDIR=${IAM%/*}
 SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
 MAKE="$SCRIPTDIR/make"
 
-VER="$1"
+#VER="$1"
+# make dist expects a hardcoded buildversion
+VER=$(cat buildversion)
 
 rm -f chicken-$VER.tar.gz
 $MAKE CHICKEN=./chicken-boot dist
