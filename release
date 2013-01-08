@@ -11,10 +11,6 @@ SCRIPTDIR=${IAM%/*}
 VER=$(cat buildversion)
 echo "Building version $VER for release..."; sleep 1
 
-# FIXME!!!
-#MAKE='make PLATFORM=macosx C_COMPILER=gcc-4.2'
-MAKE='make PLATFORM=macosx C_COMPILER=clang'
-
 $SCRIPTDIR/build $VER
 $SCRIPTDIR/make-dist $VER
 $SCRIPTDIR/test-dist $VER
