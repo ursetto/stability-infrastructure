@@ -1,4 +1,3 @@
-    TAG=4.7.0.6
     SCR=stability-infrastructure
 
 # Initialization
@@ -9,6 +8,8 @@
     git clone git://github.com/ursetto/stability-infrastructure.git
 
 Ensure authorship is correct in `[user]` section of `.git/config`.
+
+**FIXME** Modify make file or copy from make.example
 
 If you want to build and test incrementally, you should set PREFIX to
 a temp location (i.e. don't overwrite a working chicken install).
@@ -49,11 +50,33 @@ a list of applied patches, as a starting point.
     vi NEWS
     $SCR/update-news
 
-# Test the release.
+# Test incrementally
+
+This section is incomplete.  See the next section for full build testing.
+
+Safely doing incremental build and test is a bit involved, and I found it
+acceptable enough so far to do a full build & test run periodically.
+
+# Test full build as needed
+
+Easiest way to test:
+
+    $SCR/release
+
+which builds from scratch, makes a distribution tarball, builds that and tests it
+with `make check`.  It doesn't upload anything, so it's safe to run repeatedly.
+
+In other words, it does:
 
     $SCR/build
     $SCR/make-dist
     $SCR/test-dist
+
+Now add more patches, or prepare for release.
+
+# Release preparation
+
+    TAG=4.8.0.1
 
 Ensure you update the NEWS file (see above).
 
@@ -65,6 +88,8 @@ Push to call-cc and possibly github
 (NB mention `git remote add` in init section)
 
     git push call-cc stability/4.7.0 tag $TAG
+
+# Generate the release files
 
 Generate a release tarball and md5sum, test it
 
