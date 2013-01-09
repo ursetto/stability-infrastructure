@@ -1,10 +1,41 @@
 TAG=4.7.0.6
 SCR=stability-infrastructure
 
+### Initialization
+
+git clone git://code.call-cc.org/chicken-core chicken-core-stability-4.8
+cd chicken-core-stability-4.8
+git checkout -b stability/4.8.0 4.8.0
+git clone git://github.com/ursetto/stability-infrastructure.git
+
+# Ensure authorship is correct in .git/config [user] section.
+
+# If you want to build and test incrementally, you should set PREFIX to
+# a temp location (i.e. don't overwrite a working chicken install).
+# `make check` unfortunately requires that the tested Chicken has been 
+# installed into PREFIX.
+cp $SCR/make.example $SCR/make
+
 ### Patch application
 
-# It is helpful to retain information in the log on conflicts or backporting changes
-# you have to make.
+# Cherry pick patches.  Currently just does `git cherry-pick -x`.
+$SCR/cherry-pick <commitid> ...
+
+# If there is e.g. a NEWS file updated that you don't want to merge in,
+# cherry pick the patch without committing, undo the NEWS change and commit.
+# To avoid changing authorship, use -c option when committing
+# (however, this will also discard "Conflict" info added by cherry-pick).
+$SCR/cherry-pick -n <commitid>
+git reset NEWS
+git checkout -- NEWS
+git commit -c <commitid>
+
+# If a cherry pick fails and you can't resolve it and want to return
+# to the prior state of the tree:
+git reset --merge HEAD
+
+# It is helpful to retain information in the log on conflicts,
+# backporting changes or related notes.
 
 # Edit NEWS, then autogen NEWS.stability and commit both.
 # You can do this whenever you want, but it should at least be
@@ -15,12 +46,11 @@ $SCR/update-news
 
 ###
 
-# Test the release.  This is unfortunately not automated
-# Generally, you have to build and install into normal or temp prefix,
-#   then run the tests; the test suite is broken and won't run
-#   properly if chicken is not installed (error in setup-download).
-#   `make check` uses the PREFIX you specified in `make;make install`
-#   so installing to a temp prefix will work.
+# Test the release.
+
+$SCR/build
+$SCR/make-dist
+$SCR/test-dist
 
 # Ensure you update the NEWS file (see above).
 
