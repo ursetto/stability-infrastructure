@@ -8,11 +8,22 @@
 #/  generate a release log prior to tagging with a version.  Otherwise
 #/  the final tag is "HEAD".
 
-set -e
+# unset so we ignore egrep exit 1 if no matching lines present
+#set -e
 
 END=HEAD
-START=$(git merge-base origin/master HEAD)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Although merge-base works to obtain the starting point for 4.7.0,
+# merge spaghetti in the 4.8.0 prerelease# branch makes it extremely
+# noisy in 4.8.0; the rc1-rc4 tags show up as well.  We should either
+# use --ancestry-path to decrease the noisiness, or use the * in
+# stability/* as the start tag.  For now we use the *, although we
+# retain --ancestry-path just because.
+
+#START=$(git merge-base origin/master HEAD)       # use --ancestry-path for less noise
+[[ ${BRANCH%/*} == "stability" ]] || { echo "Check out stability branch first"; exit 1; }
+START=${BRANCH#*/}
 
 TAG=$END
 [[ -n "$1" ]] && TAG=$1
@@ -21,7 +32,7 @@ echo "Chicken $BRANCH branch log"
 echo
 
 LAST=$START
-(git log $START..$END --decorate --oneline --reverse | 
+(git log $START..$END --decorate --oneline --reverse --ancestry-path | 
  egrep '^[0-9a-f]+ \(tag: ' | perl -pe 's/^.+tag: ([^ ]+)[,\)].+$/\1/g' |
  egrep '^[0-9]+.[0-9]+.[0-9]+' ;
  echo $END) |          # Obtain all numeric version tags between START and END.
@@ -31,9 +42,11 @@ while read r; do
    echo
    echo "Changes in $VER:"
    echo
-   git log $LAST..$r --no-decorate --oneline --reverse | 
+   git log $LAST..$r --no-decorate --oneline --no-merges --reverse | 
      egrep -vi '[0-9a-f]+ Update news(.stability)?' |
-     egrep -v  '[0-9a-f]+ Version '
+     egrep -v  '[0-9a-f]+ Version ' |
+     egrep -v  '(bumped|set) version to ' |
+     egrep -v  'version (bumped|set) to '
    echo
    LAST=$r
 done
