@@ -8,6 +8,8 @@
     git clone git://github.com/ursetto/stability-infrastructure.git
     git checkout -b stability/4.8.0 4.8.0
 
+**FIXME** This will change a little if stability branch already exists
+
 I prefer to use `origin` as a read-only copy and set up remote `call-cc` as
 writable, to avoid accidents.  The upload examples assume remote `call-cc` exists.
 
@@ -20,7 +22,7 @@ Ensure authorship of patches is correct:
 
     cp $SCR/make.example $SCR/make
 
-FIXME If you want to build and test incrementally, you should set PREFIX to
+**FIXME** If you want to build and test incrementally, you should set PREFIX to
 a temp location (i.e. don't overwrite a working chicken install).
 `make check` unfortunately requires that the tested Chicken has been 
 installed into PREFIX.
@@ -48,14 +50,6 @@ to the prior state of the tree:
 
 It is helpful to retain information in the log on conflicts,
 backporting changes or related notes.
-
-Edit NEWS, then autogen NEWS.stability and commit both.
-You can do this whenever you want, but it should at least be
-done directly before a release.  $SCR/generate-patchlog displays
-a list of applied patches, as a starting point.
-
-    vi NEWS
-    $SCR/update-news
 
 # Test incrementally
 
@@ -87,15 +81,31 @@ Below, `$TAG` denotes the version number you intend to release.
 
     TAG=4.8.0.1
 
-Ensure you update the NEWS file (see above).
+Update `NEWS` and commit it.  This will also generate and commit
+`NEWS.stability` at the same time.
 
-Tag new release (updates version info, generates NEWS.stability patchlog, creates signed tag):
+    vi NEWS
+    $SCR/update-news
+
+You can update the news whenever you want, but it should always be done
+directly before a release.  `$SCR/generate-patchlog` displays a list of applied
+patches to stdout, which may help when compiling `NEWS`.
+
+Tag the new release.
 
     $SCR/tag $TAG
 
+Tagging will:
+
+- Update the Chicken version to `$TAG`. We bump the version at release time; don't update `buildversion` manually.
+- Generate the `NEWS.stability` patchlog (redundant, if you used `update-news` in the last step)
+- Create a signed, annotated tag.  Annotated tags play better with `git describe`.  Signed keys use your GPG key to sign the commit object; there's no official Chicken GPG signing key yet, so edit the script to use `tag -a` if you have no GPG key.
+
+
 # Generate the release files
 
-Generate a release tarball and md5sum, test it
+Build Chicken from scratch, make a distribution tarball and md5sum it, extract and build
+the tarball, and test it with `make check`:
 
     $SCR/release
 
