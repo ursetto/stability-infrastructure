@@ -7,25 +7,22 @@
     git remote add call-cc <USER>@call-cc:/usr/local/repos/chicken-core.git
     git clone git://github.com/ursetto/stability-infrastructure.git
     git checkout -b stability/4.8.0 4.8.0
-
-**FIXME** This will change a little if stability branch already exists
+    # or, if stability/4.8.0 branch already exists:
+    git checkout -b stability/4.8.0 4.8.0
 
 I prefer to use `origin` as a read-only copy and set up remote `call-cc` as
-writable, to avoid accidents.  The upload examples assume remote `call-cc` exists.
+writable, to avoid accidents.  The `push` script assumes remote `call-cc` exists.
 
 Ensure authorship of patches is correct:
 
     git config user.name  "M. Y. Croft"
     git config user.email "my@croft.com"
 
-**FIXME** Modify make file or copy from make.example
+Create your `make` command, which should be a shell script wrapping a call to
+`make` with needed arguments such as PLATFORM.  An example is provided.
 
     cp $SCR/make.example $SCR/make
-
-**FIXME** If you want to build and test incrementally, you should set PREFIX to
-a temp location (i.e. don't overwrite a working chicken install).
-`make check` unfortunately requires that the tested Chicken has been 
-installed into PREFIX.
+    vi $SCR/make
 
 # Patch application
 

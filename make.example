@@ -1,1 +1,14 @@
+# make wrapper for build scripts.  See below for notes
+
 make PLATFORM=macosx NURSERY=1048576 C_COMPILER=clang CHICKEN=$HOME/local/chicken-4.8.0/bin/chicken PREFIX=$HOME/local/chicken-4.8.0.x-clang "$@"
+
+# PLATFORM is required at minimum.  
+# CHICKEN (if provided) should generally point to an installed Chicken 
+#  in the same series (for example, 4.8.0 can be used to build 4.8.0.x),
+#  or a boot-chicken of the same vintage.
+#  We build a boot-chicken during the build phase, but to build that,
+#  we need CHICKEN.
+# PREFIX is not used by the scripts (we always install into a temp location
+#  when testing).  If you do set it, don't overwrite CHICKEN!  It might
+#  be useful to set this for e.g. incremental build and test, which
+#  we do not officially support.
