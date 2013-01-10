@@ -101,7 +101,6 @@ Tagging will:
 - Generate the `NEWS.stability` patchlog (redundant, if you used `update-news` in the last step)
 - Create a signed, annotated tag.  Annotated tags play better with `git describe`.  Signed keys use your GPG key to sign the commit object; there's no official Chicken GPG signing key yet, so edit the script to use `tag -a` if you have no GPG key.
 
-
 # Generate the release files
 
 Build Chicken from scratch, make a distribution tarball and md5sum it, extract and build
@@ -115,10 +114,12 @@ You can push any time you are confident the patches have tested safe
 and won't change; but you definitely have to push when you make a
 release!
 
-**FIXME** First push may need stability/4.8.0:stability/4.8.0.  And after?  
-**FIXME** We don't have a script for this.
+Ensure the stability branch is checked out and:
 
-    git push call-cc stability/4.8.0 tag $TAG
+    ./push $TAG
+
+$TAG should be the release TAG.  You can omit $TAG if you are not pushing a
+release.  
 
 # Upload tarball
 
