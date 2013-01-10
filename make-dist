@@ -3,13 +3,17 @@ set -e
 
 IAM=$(which $0)
 SCRIPTDIR=${IAM%/*}
+source $SCRIPTDIR/common
+
 SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
 MAKE="$SCRIPTDIR/make"
 
 #VER="$1"
 # make dist expects a hardcoded buildversion
-VER=$(cat buildversion)
+get_built_ver_and_id
 
-rm -f chicken-$VER.tar.gz
-$MAKE CHICKEN=./chicken-boot dist
-md5sum chicken-$VER.tar.gz > chicken-$VER.tar.gz.md5
+rm -f chicken-$VER_ID.tar.gz
+$MAKE CHICKEN=./chicken-boot dist               # produces chicken-$VER.tar.gz, in chicken-$VER/
+mv chicken-$VER.tar.gz chicken-$VER_ID.tar.gz
+md5sum chicken-$VER_ID.tar.gz > chicken-$VER_ID.tar.gz.md5
+# gpg -ab chicken-$VER_ID.tar.gz

@@ -2,17 +2,15 @@
 set -e
 trap "echo '*** release failed ***' >&2" ERR
 
-#VER=$1
-#if [ -z "$VER" ]; then echo "usage: $0 4.7.0.5-st" >&2; exit 1; fi
-
 IAM=$(which $0)
 SCRIPTDIR=${IAM%/*}
+source $SCRIPTDIR/common
 
-VER=$(cat buildversion)
-echo "Building version $VER for release..."; sleep 1
+get_building_ver_and_id
+echo "Building version $VER_ID for release..."; sleep 1
 
-$SCRIPTDIR/build $VER
-$SCRIPTDIR/make-dist $VER
-$SCRIPTDIR/test-dist $VER
+$SCRIPTDIR/build
+$SCRIPTDIR/make-dist
+$SCRIPTDIR/test-dist
 
 ### Do the copy step manually for now (using ./upload).

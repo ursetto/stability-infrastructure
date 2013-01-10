@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Version comes from buildversion and ID is git short hash from either HEAD
+# (when we are about to build) or buildid (after a build).
+get_building_ver_and_id() { _get_ver_and_id $(git rev-parse --short HEAD); }
+get_built_ver_and_id()    { _get_ver_and_id $(cat buildid); }
+
+_get_ver_and_id() {           # Sets $VER, $ID and $VER_ID
+
+  VER=$(cat buildversion)
+  ID=$1
+  
+  # For now, we will not verify that HEAD == buildid.
+  if [[ "$ID" == "$(git rev-parse --short --quiet $VER || true)" ]]; then
+      VER_ID=$VER
+  else
+      VER_ID=$VER-$ID
+  fi
+
+}

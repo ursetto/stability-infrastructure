@@ -3,17 +3,17 @@ set -e
 
 IAM=$(which $0)
 SCRIPTDIR=${IAM%/*}
+source $SCRIPTDIR/common
+
 SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
 MAKE="$SCRIPTDIR/make"
 
-#VER="$1"
-# `make dist` and make-dist take their version from buildversion, so we do too
-VER=$(cat buildversion)
+get_built_ver_and_id
 
-rm -rf chicken-$VER
-tar zxf chicken-$VER.tar.gz
+rm -rf chicken-$VER            # `make dist` doesn't know about our _ID component
+tar zxf chicken-$VER_ID.tar.gz
 
-cd chicken-$VER
+cd chicken-$VER                # again, no _ID component
 $MAKE PREFIX=$PWD/inst         # Unfortunately `make check` requires chicken to be installed
 $MAKE PREFIX=$PWD/inst install
 $MAKE PREFIX=$PWD/inst check   # Setting prefix here is not necessary, but not harmful
