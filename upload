@@ -13,5 +13,6 @@ BASEVER=4.7.0
 echo "Copying tarball and md5 file to release location..."
 scp "chicken-$VER.tar.gz" "chicken-$VER.tar.gz.md5" call-cc:/var/www/apache/code/releases/$BASEVER/
 
-echo "Pushing branch to call-cc..."
-git push call-cc stability/$BASEVER tag $VER
+# Right now, expect user does this beforehand using ./push.
+# echo "Pushing branch to call-cc..."
+# git push call-cc stability/$BASEVER tag $VER
