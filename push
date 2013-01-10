@@ -1,6 +1,21 @@
-# Push stable branch and specified tag
+#!/bin/bash
+
+#/ usage: $0 [TAG]
+#/  Push checked-out stability branch and optional tag $TAG.
+
+# Since TAG is optional, we can't derive stability/* name from TAG.
+# (We don't check TAG format either...)
+
 # If you use --tags it will push all tags including core tags, maybe this is ok?
 # Alternatively break this up into two steps: git push github; git push github tag $TAG
+# Alternatively, push all tags found in the stability branch (you'd have to use BASEVER
+# as the starting point).
 
-TAG=4.7.0.6
-git push github stability/4.7.0 tag $TAG
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+[[ ${BRANCH%/*} == "stability" ]] || { echo "Check out stability branch first"; exit 1; }
+BASEVER=${BRANCH#*/}
+
+TAG=$1
+[[ -n "$TAG" ]] && TAG="tag $TAG"
+
+git push call-cc $BRANCH $TAG
