@@ -1,6 +1,22 @@
-    SCR=stability-infrastructure
+# Overview
+
+These scripts help maintain the Chicken stability branches.
+
+This repository should be checked out somewhere under your Chicken repository
+checkout; for example, in `./stability-infrastructure`.
+
+You *must* be in your Chicken repository directory when running these scripts.
+
+Below, we use `$SCR` as the path to the scripts -- where you checked out
+this repository.
+
+    SCR=./stability-infrastructure
 
 # Initialization
+
+Check out chicken and this repository; create a new stability branch if needed.
+Stability branches are named like `stability/x.y.z` (e.g. `stability/4.8.0`)
+and version numbered like `x.y.z.w` (e.g. `4.8.0.1`).
 
     git clone git://code.call-cc.org/chicken-core chicken-core-stability-4.8
     cd chicken-core-stability-4.8
@@ -19,7 +35,8 @@ Ensure authorship of patches is correct:
     git config user.email "my@croft.com"
 
 Create your `make` command, which should be a shell script wrapping a call to
-`make` with needed arguments such as PLATFORM.  An example is provided.
+`make` with needed arguments for your environment such as PLATFORM.
+An example is provided.  This is called by the build scripts.
 
     cp $SCR/make.example $SCR/make
     vi $SCR/make
@@ -70,6 +87,10 @@ In other words, it does:
     $SCR/make-dist
     $SCR/test-dist
 
+Assuming you're still testing and haven't tagged a release yet, the distribution
+tarball is named `chicken-$VER-$ID.tar.gz`, where $VER is from `buildversion` 
+and $ID is the git hash from `buildid`.
+
 Now add more patches, or prepare for release.
 
 # Release preparation
@@ -88,7 +109,7 @@ You can update the news whenever you want, but it should always be done
 directly before a release.  `$SCR/generate-patchlog` displays a list of applied
 patches to stdout, which may help when compiling `NEWS`.
 
-Tag the new release.
+Tag the new release with the next version number.
 
     $SCR/tag $TAG
 
@@ -100,10 +121,16 @@ Tagging will:
 
 # Generate the release files
 
-Build Chicken from scratch, make a distribution tarball and md5sum it, extract and build
+First, tag the release as in the previous section.
+
+Then build Chicken from scratch, make a distribution tarball and md5sum it, extract and build
 the tarball, and test it with `make check`:
 
     $SCR/release
+
+The tarball will be named `chicken-$VER.tar.gz`, e.g. `chicken-4.8.0.1.tar.gz`,
+where $VER is the Chicken version (and the tag name you just created).  No build ID
+is added to the filename, as the build ID, version, and tag all correspond.
 
 # Push updates to call-cc repository
 
