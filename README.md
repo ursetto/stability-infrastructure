@@ -7,8 +7,8 @@ checkout; for example, in `./stability-infrastructure`.
 
 You *must* be in your Chicken repository directory when running these scripts.
 
-Below, we use `$SCR` as the path to the scripts -- where you checked out
-this repository.
+Below, we use `$SCR` as the path to the scripts -- in other words
+where you checked out this repository.
 
     SCR=./stability-infrastructure
 
@@ -140,20 +140,49 @@ release!
 
 Ensure the stability branch is checked out and:
 
-    ./push $TAG
+    $SCR/push $TAG
 
-$TAG should be the release TAG.  You can omit $TAG if you are not pushing a
+`$TAG` should be the release tag name.  You can omit `$TAG` if you are not pushing a
 release.  
 
 # Upload tarball
 
-See zbigniew@call-cc:chicken-infrastructure/doc/release-steps.
+Upload the release tarball, md5sum and NEWS to the Chicken release directory
+and create proper symlinks for them:
 
-Tarballs should now go in /var/www/apache/code/releases/x.y.z --
-not sure if they should be mirrored in stability dir anymore.
+    $SCR/upload
+
+This assumes you have a ssh host alias of `call-cc` pointing to `myuser@call-cc.org`,
+and that `myuser` has `ALL` sudo access to user `chicken`.
+
+For details, see `doc/release-steps` in `/usr/local/repos/chicken-infrastructure.git`, 
+as well as the upload script.
 
 # Update download page
 
-The main download page on code.call-cc.org must be updated manually.  The releases page itself is a directory listing and does *not* need to be updated.  
+The "latest CHICKEN release" section of the index page on
+<http://code.call-cc.org> must be updated manually.  
 
-(future: edit zbigniew@call-cc:~/chicken-infrastructure/code/index.wiki, make (to copy file), commit and push)
+- `ssh` to `call-cc.org` as a user in group `chicken`
+
+- Get a clone of the chicken-infrastructure repository.
+
+        $ git clone /usr/local/repos/chicken-infrastructure
+
+- Edit `index.wiki`, updating the version, the link to the new tarball, the link to the
+  NEWS file, and the md5sum for the tarball.
+
+        $ cd chicken-infrastructure/code
+        $ vi index.wiki
+
+- Generate and install the HTML file.
+
+        $ make
+        $ make install
+
+- Verify the index file (`/var/www/apache/code/index.html`) is mode `0664 www-data:chicken`, which should already be the case.
+
+- Commit and push your `index.wiki` change.
+
+The `/releases` page itself is a directory listing and does *not* need to
+be updated.

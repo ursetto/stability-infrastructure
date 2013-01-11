@@ -1,17 +1,49 @@
 #!/bin/sh
+#/ Uploads release tarball, md5sum and NEWS to Chicken release directory
+#/ and creates symlinks for them, all according to the recipe shown
+#/ in chicken-infrastructure.git/doc/release-steps.  Files will be owned
+#/ by user 'chicken'.
+#/
+#/ Assumes you have ssh host alias of "call-cc" pointing to myuser@call-cc.org,
+#/ and that 'myuser' has ALL sudo access to user 'chicken'.
 
-# FIXME: derive BASEVER either from branchname or $VER
-# FIXME: Upload NEWS to NEWS.$VER
-# FIXME: Update symlinks
-# FIXME: See chicken-infrastructure/doc/release-steps
-# FIXME: Get push branch name from current branch?  Or assume stability/$BASEVER?
 set -e
+trap "echo; echo '*** upload failed ***' >&2" ERR
 
-VER=$1
-BASEVER=4.7.0
+IAM=$(which $0)
+SCRIPTDIR=${IAM%/*}
+source $SCRIPTDIR/common
 
-echo "Copying tarball and md5 file to release location..."
-scp "chicken-$VER.tar.gz" "chicken-$VER.tar.gz.md5" call-cc:/var/www/apache/code/releases/$BASEVER/
+# Obtain base version from stability/* (stability/4.8.0 -> 4.8.0). 
+# common code with ./push, could be moved to common
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+[[ ${BRANCH%/*} == "stability" ]] || { echo "Check out stability branch first"; exit 1; }
+BASEVER=${BRANCH#*/}
+
+INSTDIR=/tmp/zb-$BASEVER
+#INSTDIR=/var/www/apache/code/releases/$BASEVER
+SUDO="sudo -u chicken"
+
+get_built_ver_and_id           # populate $VER (e.g. 4.8.0.1)
+
+# Require parent of INSTDIR to exist, though $BASEVER/ may be created.
+# Note: We do not link $BASEVER/ to current/.
+
+echo "Copying files to release location $INSTDIR..."
+
+tar c chicken-$VER.tar.gz chicken-$VER.tar.gz.md5 NEWS |
+ ssh call-cc "
+  set -e
+  umask 22;
+  $SUDO mkdir $INSTDIR || true
+  $SUDO tar xv -C $INSTDIR
+  $SUDO mv $INSTDIR/NEWS $INSTDIR/NEWS-$VER
+  $SUDO ln -nsf NEWS-$VER $INSTDIR/NEWS
+  $SUDO ln -nsf chicken-$VER.tar.gz $INSTDIR/chicken.tar.gz
+  $SUDO ln -nsf chicken-$VER.tar.gz.md5 $INSTDIR/chicken.tar.gz.md5
+  echo
+  $SUDO ls -l $INSTDIR
+"
 
 # Right now, expect user does this beforehand using ./push.
 # echo "Pushing branch to call-cc..."
