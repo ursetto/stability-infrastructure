@@ -21,10 +21,10 @@ and version numbered like `x.y.z.w` (e.g. `4.8.0.1`).
     git clone git://code.call-cc.org/chicken-core chicken-core-stability-4.8
     cd chicken-core-stability-4.8
     git remote add call-cc <USER>@call-cc:/usr/local/repos/chicken-core.git
-    git clone git://github.com/ursetto/stability-infrastructure.git
+    git clone git://github.com/ursetto/stability-infrastructure.git $SCR
     git checkout -b stability/4.8.0 4.8.0
     # or, if stability/4.8.0 branch already exists:
-    git checkout -b stability/4.8.0 4.8.0
+    git checkout stability/4.8.0
 
 I prefer to use `origin` as a read-only copy and set up remote `call-cc` as
 writable, to avoid accidents.  The `push` script assumes remote `call-cc` exists.
