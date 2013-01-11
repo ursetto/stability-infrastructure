@@ -7,7 +7,7 @@ checkout; for example, in `./stability-infrastructure`.
 
 You *must* be in your Chicken repository directory when running these scripts.
 
-Below, we use `$SCR` as the path to the scripts -- in other words
+Below, we use `$SCR` as the path to the scripts -- in other words,
 where you checked out this repository.
 
     SCR=./stability-infrastructure
@@ -35,7 +35,7 @@ Ensure authorship of patches is correct:
     git config user.email "my@croft.com"
 
 Create your `make` command, which should be a shell script wrapping a call to
-`make` with needed arguments for your environment such as PLATFORM.
+`make` with needed arguments for your environment such as `PLATFORM`.
 An example is provided.  This is called by the build scripts.
 
     cp $SCR/make.example $SCR/make
@@ -47,9 +47,12 @@ Cherry pick patches.  Currently just does `git cherry-pick -x`.
 
     $SCR/cherry-pick <commitid> ...
 
+Specifying more than one `commitid` may apply patches out of order, and
+I have no idea why.
+
 If there is e.g. a NEWS file updated that you don't want to merge in,
 cherry pick the patch without committing, undo the NEWS change and commit.
-To avoid changing authorship, use -c option when committing
+To avoid changing authorship after `-n`, use the `-c` option when committing
 (however, this will also discard "Conflict" info added by cherry-pick).
 
     $SCR/cherry-pick -n <commitid>
@@ -116,8 +119,10 @@ Tag the new release with the next version number.
 Tagging will:
 
 - Update the Chicken version to `$TAG`. We bump the version at release time; don't update `buildversion` manually.
-- Generate the `NEWS.stability` patchlog (redundant, if you used `update-news` in the last step)
-- Create a signed, annotated tag.  Annotated tags play better with `git describe`.  Signed keys use your GPG key to sign the commit object; there's no official Chicken GPG signing key yet, so edit the script to use `tag -a` if you have no GPG key.
+- Generate the `NEWS.stability` patchlog; you probably used `update-news` in the last step, so this will merely change "HEAD" to "$TAG" in the text.
+- Create a signed, annotated tag.
+  - Annotated tags play better with `git describe`.
+  - Signed keys use your GPG key to sign the tag object; there's no official Chicken GPG signing key yet, so edit the script to use `tag -a` if you have no GPG key.
 
 # Generate the release files
 
@@ -129,7 +134,7 @@ the tarball, and test it with `make check`:
     $SCR/release
 
 The tarball will be named `chicken-$VER.tar.gz`, e.g. `chicken-4.8.0.1.tar.gz`,
-where $VER is the Chicken version (and the tag name you just created).  No build ID
+where `$VER` is the Chicken version (and the tag name you just created).  No build ID
 is added to the filename, as the build ID, version, and tag all correspond.
 
 # Push updates to call-cc repository
@@ -147,15 +152,15 @@ release.
 
 # Upload tarball
 
-Upload the release tarball, md5sum and NEWS to the Chicken release directory
+Upload the release tarball, md5sum and `NEWS` to the Chicken release directory
 and create proper symlinks for them:
 
     $SCR/upload
 
-This assumes you have a ssh host alias of `call-cc` pointing to `myuser@call-cc.org`,
+This assumes you have a `ssh` host alias of `call-cc` pointing to `myuser@call-cc.org`,
 and that `myuser` has `ALL` sudo access to user `chicken`.
 
-For details, see `doc/release-steps` in `/usr/local/repos/chicken-infrastructure.git`, 
+For details, see `doc/release-steps` in `call-cc.org:/usr/local/repos/chicken-infrastructure.git`, 
 as well as the upload script.
 
 # Update download page
