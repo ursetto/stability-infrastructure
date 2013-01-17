@@ -1,0 +1,24 @@
+#!/bin/sh
+#/ Usage: $0 TAG
+#/   Set Chicken version to $TAG by updating buildversion, 
+#/   version.scm (if needed) and documentation.  
+#/   For use with stability branch only!
+#/ Example: $0 4.7.0.3-st
+
+set -e
+usage() { grep ^#/ $0 | cut -c4-; exit 1; }
+
+TAG="$1"
+[ -z "$TAG" ] && usage
+
+printf "$TAG" > buildversion
+if [[ -e "version.scm" ]]; then               # Not needed for >= 4.8.
+  printf '(define-constant +build-version+ "%s")\n' "$TAG" > version.scm
+fi
+
+TAG="$TAG" \
+perl -pi -e 's/version [0-9][-.0-9a-zA-Z]+/version $ENV{TAG}/g' \
+  "README" \
+  "manual/The User's Manual" \
+
+
