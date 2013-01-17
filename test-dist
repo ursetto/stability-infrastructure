@@ -6,7 +6,7 @@ SCRIPTDIR=${IAM%/*}
 source $SCRIPTDIR/common
 
 SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
-MAKE="$SCRIPTDIR/make"
+MK="$SCRIPTDIR/make"
 
 get_built_ver_and_id
 
@@ -14,9 +14,9 @@ rm -rf chicken-$VER            # `make dist` doesn't know about our _ID componen
 tar zxf chicken-$VER_ID.tar.gz
 
 cd chicken-$VER                # again, no _ID component
-$MAKE PREFIX=$PWD/inst         # Unfortunately `make check` requires chicken to be installed
-$MAKE PREFIX=$PWD/inst install
-$MAKE PREFIX=$PWD/inst check   # Setting prefix here is not necessary, but not harmful
+$MK PREFIX=$PWD/inst         # Unfortunately `make check` requires chicken to be installed
+$MK PREFIX=$PWD/inst install
+$MK PREFIX=$PWD/inst check   # Setting prefix here is not necessary, but not harmful
 cd $OLDPWD
 
 rm -rf chicken-$VER

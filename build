@@ -6,12 +6,12 @@ set -e
 IAM=$(which $0)
 SCRIPTDIR=${IAM%/*}
 
-MAKE="$SCRIPTDIR/make"
+MK="$SCRIPTDIR/make"
 
 # Workaround for Makefile bug; clang will barf if ar is called on existing files
 rm -f libchicken-boot*.a
 
-$MAKE spotless
-$MAKE boot-chicken
-$MAKE CHICKEN=./chicken-boot spotless
-$MAKE CHICKEN=./chicken-boot
+$MK spotless
+$MK boot-chicken
+$MK CHICKEN=./chicken-boot spotless
+$MK CHICKEN=./chicken-boot
