@@ -20,8 +20,8 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 [[ ${BRANCH%/*} == "stability" ]] || { echo "Check out stability branch first"; exit 1; }
 BASEVER=${BRANCH#*/}
 
-INSTDIR=/tmp/zb-$BASEVER
-#INSTDIR=/var/www/apache/code/releases/$BASEVER
+#INSTDIR=/tmp/zb-$BASEVER
+INSTDIR=/var/www/apache/code/releases/$BASEVER
 SUDO="sudo -u chicken"
 
 get_built_ver_and_id           # populate $VER (e.g. 4.8.0.1)
