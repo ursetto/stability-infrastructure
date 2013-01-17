@@ -30,6 +30,7 @@ git show-ref --tags "$TAG" >/dev/null \
 $SCRIPTDIR/update-version "$TAG"
 git add buildversion
 git add version.scm || true           # Not needed if >= 4.8.
+git add README "manual/The User's Manual"
 
 $SCRIPTDIR/generate-patchlog "$TAG" > NEWS.stability
 git add NEWS.stability
