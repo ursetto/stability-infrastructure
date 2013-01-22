@@ -1,10 +1,10 @@
 ##### Cherry pick comparisons.  If a patch had conflicts or had to be backported,
 ##### you will get a false negative, and have to rely on "cherry-pick -x" log data.
 
-# List commid IDs since fork point that I haven't added to stability (- means present, + means absent)
+# List commit IDs since fork point that I haven't added to stability (- means present, + means absent)
 git cherry stability/4.7.0 origin/master
 
-# List commid IDs since 4.7.4 that I haven't added to stability
+# List commit IDs since 4.7.4 that I haven't added to stability
 git cherry stability/4.7.0 origin/master 4.7.4 | egrep '^\+'
 
 # List commit IDs in stability that were cherry-picked (-) and created by me (+)
