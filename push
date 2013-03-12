@@ -16,6 +16,9 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 BASEVER=${BRANCH#*/}
 
 TAG=$1
-[[ -n "$TAG" ]] && TAG="tag $TAG"
 
-git push call-cc $BRANCH $TAG
+git push call-cc $BRANCH || exit 1
+
+if [[ -n "$TAG" ]]; then
+  git push call-cc tag $TAG
+fi
