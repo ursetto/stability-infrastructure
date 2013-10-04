@@ -19,6 +19,6 @@ $MK PREFIX=$PWD/inst install
 $MK PREFIX=$PWD/inst check   # Setting prefix here is not necessary, but not harmful
 cd $OLDPWD
 
-rm -rf chicken-$VER
+# rm -rf chicken-$VER        # More often than not, I want to keep the build
 # can also make -f Makefile.macosx buildhead prior to this
 

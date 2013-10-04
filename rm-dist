@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+IAM=$(which $0)
+SCRIPTDIR=${IAM%/*}
+source $SCRIPTDIR/common
+
+SCRIPTDIR=$(cd $SCRIPTDIR && pwd)
+MK="$SCRIPTDIR/make"
+
+get_built_ver_and_id
+
+echo Removing distribution directory chicken-$VER/
+echo rm -rf chicken-$VER            # `make dist` doesn't know about our _ID component
