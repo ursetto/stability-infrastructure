@@ -14,6 +14,17 @@ get_built_ver_and_id
 
 rm -f chicken-$VER_ID.tar.gz
 $MK CHICKEN=./chicken-boot dist               # produces chicken-$VER.tar.gz, in chicken-$VER/
+
+[[ "$VER" = "$VER_ID" ]] && {
+  # Default 'compiled' tag is misleading and too specific for general dist.
+  #   We are forced to patch buildtag.h in the resulting tarfile because the build*
+  #   files are unconditionally clobbered any time a Makefile is run.
+  rm -rf chicken-$VER
+  tar zxf chicken-$VER.tar.gz
+  echo "#define C_BUILD_TAG \"bootstrapped $(date +%Y-%m-%d)\"" > chicken-$VER/buildtag.h
+  tar zcf chicken-$VER.tar.gz chicken-$VER
+}
+
 mv chicken-$VER.tar.gz chicken-$VER_ID.tar.gz
 md5sum chicken-$VER_ID.tar.gz > chicken-$VER_ID.tar.gz.md5
 # gpg -ab chicken-$VER_ID.tar.gz
