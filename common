@@ -3,7 +3,7 @@
 # VER comes from buildversion and ID is git short hash from either HEAD
 # (when we are about to build) or buildid (after a build).
 # VER_ID will be $VER if the commit matching tag $VER is also HEAD,
-#  and $VER-ID otherwise; in other words we append the hash for non-releases.
+#  and $VER-$ID otherwise; in other words we append the hash for non-releases.
 get_building_ver_and_id() { _get_ver_and_id $(git rev-parse --short HEAD); }
 get_built_ver_and_id()    { _get_ver_and_id $(cat buildid); }
 
