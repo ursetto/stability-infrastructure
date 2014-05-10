@@ -19,9 +19,13 @@ $MK CHICKEN=./chicken-boot dist               # produces chicken-$VER.tar.gz, in
   # Default 'compiled' tag is misleading and too specific for general dist.
   #   We are forced to patch buildtag.h in the resulting tarfile because the build*
   #   files are unconditionally clobbered any time a Makefile is run.
+  #   We must also antedate buildtag.h, or build-version.c will be regenerated when the
+  #   user builds chicken, which will error out if chicken is not already installed.
+  #   This is due to a dependency error in rules.make (.o should depend on .h; .c should not)
   rm -rf chicken-$VER
   tar zxf chicken-$VER.tar.gz
   echo "#define C_BUILD_TAG \"bootstrapped $(date +%Y-%m-%d)\"" > chicken-$VER/buildtag.h
+  touch -r chicken-$VER/build-version.c chicken-$VER/buildtag.h 
   tar zcf chicken-$VER.tar.gz chicken-$VER
 }
 
